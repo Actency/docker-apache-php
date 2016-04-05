@@ -16,9 +16,9 @@ Available tags are:
       # web with xdebug - actency images
       web:
         # actency/docker-apache-php available tags: latest, 7.0, 5.6, 5.5, 5.4, 5.3
-        build: actency/docker-apache-php:5.6
+        image: actency/docker-apache-php:5.6
         # actency/docker-nginx-php available tags: latest, 5.6, 5.5, 5.4
-        #build: actency/docker-nginx-php:5.6
+        #image: actency/docker-nginx-php:5.6
         ports:
           - "80:80"
         environment:
