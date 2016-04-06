@@ -32,6 +32,7 @@ Available tags are:
           - database:mysql
           - mailhog
           - memcache
+          - solr
 
       # database container - actency images
       database:
