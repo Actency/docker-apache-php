@@ -73,11 +73,5 @@ Available tags are:
           - "11211:11211"
         command: memcached -m 64
 
-      # solr container - actency images
-      solr:
-        build: ./docker/solr/3.6.2
-        ports:
-          - "8080:8983"
-
 
 See the [Docker Hub page](https://hub.docker.com/r/actency/docker-apache-php/) for the full readme on how to use this and for other information.
