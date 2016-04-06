@@ -36,7 +36,7 @@ Available tags are:
       # database container - actency images
       database:
         # actency/docker-mysql available tags: latest, 5.7, 5.6, 5.5
-        image: actency/docker-mysql:5.6
+        image: actency/docker-mysql:5.7
         ports:
           - "3306:3306"
         environment:
@@ -71,6 +71,13 @@ Available tags are:
         ports:
           - "11211:11211"
         command: memcached -m 64
+
+      # solr container - actency images
+      solr:
+        # actency/docker-solr available tags: latest, 5.5, 5.4, 5.3, 5.2, 5.1, 5.0, 4.10, 3.6
+        image: actency/docker-solr:latest
+        ports:
+          - "8080:8983"
 
 
 See the [Docker Hub page](https://hub.docker.com/r/actency/docker-apache-php/) for the full readme on how to use this and for other information.
