@@ -42,10 +42,6 @@ sed -i "s/MYSERVERNAME/$SERVERNAME/g" /etc/apache2/sites-available/default
 sed -i "s/MYSERVERALIAS/$SERVERALIAS/g" /etc/apache2/sites-available/default
 sed -i "s/MYDOCUMENTROOT/$DOCUMENTROOT/g" /etc/apache2/sites-available/default
 
-# SSH keys permissions
-chown -R www-data:www-data /var/www/.ssh/
-chmod -R 600 /var/www/.ssh/
-
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 

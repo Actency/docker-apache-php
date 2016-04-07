@@ -74,8 +74,10 @@ RUN a2enmod rewrite expires
 
 VOLUME /var/www/html
 
-# copy ssh keys
+# create directory for ssh keys
 RUN mkdir /var/www/.ssh/
+RUN chown -R www-data:www-data /var/www/.ssh/
+RUN chmod -R 600 /var/www/.ssh/
 
 WORKDIR /var/www/html
 
