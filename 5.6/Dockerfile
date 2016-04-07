@@ -131,6 +131,8 @@ VOLUME /var/www/html
 
 # create directory for ssh keys
 RUN mkdir /var/www/.ssh/
+RUN chown -R www-data:www-data /var/www/.ssh/
+RUN chmod -R 600 /var/www/.ssh/
 
 # Expose 80 for apache, 9000 for xdebug
 EXPOSE 80 9000

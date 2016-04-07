@@ -25,8 +25,8 @@ sed -i "s/MYSERVERALIAS/$SERVERALIAS/g" /etc/apache2/apache2.conf
 sed -i "s/MYDOCUMENTROOT/$DOCUMENTROOT/g" /etc/apache2/apache2.conf
 
 # SSH keys permissions
-chown -R www-data:www-data /var/www/.ssh/
-chmod -R 600 /var/www/.ssh/
+# chown -R www-data:www-data /var/www/.ssh/
+# chmod -R 600 /var/www/.ssh/
 
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
