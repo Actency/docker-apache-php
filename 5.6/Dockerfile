@@ -126,6 +126,9 @@ RUN ( \
 
 RUN a2enmod rewrite expires && service apache2 restart
 
+#install phing
+RUN pear channel-discover pear.phing.info && pear install [--alldeps] phing/phing
+
 # Our apache volume
 VOLUME /var/www/html
 
