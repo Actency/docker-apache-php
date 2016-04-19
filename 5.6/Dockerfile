@@ -101,7 +101,7 @@ COPY core/memcached.conf /etc/memcached.conf
     cd /var/www/.drush && wget https://ftp.drupal.org/files/projects/site_audit-7.x-1.15.zip && unzip site_audit-7.x-1.15.zip; \
     cd /var/www/.drush && rm *.zip; \
     chown -R www-data:www-data /var/www; \
-    sudo -u www-data drush cc drush;
+    sudo -u www-data drush cc drush; \
 
     # Installation of PHP_CodeSniffer with Drupal coding standards.
     # See https://www.drupal.org/node/1419988#coder-composer
