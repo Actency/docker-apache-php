@@ -89,11 +89,18 @@ COPY core/memcached.conf /etc/memcached.conf
     cd /usr/src && curl -sS http://getcomposer.org/installer | php; \
     cd /usr/src && mv composer.phar /usr/bin/composer; \
 
-    # # Installation of drush
+    # Installation of drush
     git clone https://github.com/drush-ops/drush.git /usr/local/src/drush; \
     cd /usr/local/src/drush && git checkout 8.0.5; \
     ln -s /usr/local/src/drush/drush /usr/bin/drush; \
     cd /usr/local/src/drush && composer update && composer install; \
+
+    # Add drush components
+    sudo -u www-data drush; \
+    cd /var/www/.drush && wget https://ftp.drupal.org/files/projects/registry_rebuild-7.x-2.3.zip && unzip registry_rebuild-7.x-2.3.zip; \
+    cd /var/www/.drush && wget https://ftp.drupal.org/files/projects/site_audit-7.x-1.15.zip && unzip site_audit-7.x-1.15.zip; \
+    cd /var/www/.drush && rm *.zip; \
+    chown -R www-data:www-data /var/www; \
 
     # Installation of PHP_CodeSniffer with Drupal coding standards.
     # See https://www.drupal.org/node/1419988#coder-composer
