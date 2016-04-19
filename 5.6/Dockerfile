@@ -126,8 +126,14 @@ RUN ( \
 
 RUN a2enmod rewrite expires && service apache2 restart
 
-#install phing
+# install phing
 RUN pear channel-discover pear.phing.info && pear install [--alldeps] phing/phing
+
+# install phpcpd
+RUN wget https://phar.phpunit.de/phpcpd.phar && chmod +x phpcpd.phar && mv phpcpd.phar /usr/local/bin/phpcpd
+
+# install phpmetrics
+RUN wget https://github.com/phpmetrics/PhpMetrics/raw/master/build/phpmetrics.phar && chmod +x phpmetrics.phar && mv phpmetrics.phar /usr/local/bin/phpmetrics
 
 # Our apache volume
 VOLUME /var/www/html
