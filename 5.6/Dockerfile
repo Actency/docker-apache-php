@@ -96,11 +96,12 @@ COPY core/memcached.conf /etc/memcached.conf
     cd /usr/local/src/drush && composer update && composer install; \
 
     # Add drush components
-    sudo -u www-data drush; \
+    mkdir /var/www/.drush; \
     cd /var/www/.drush && wget https://ftp.drupal.org/files/projects/registry_rebuild-7.x-2.3.zip && unzip registry_rebuild-7.x-2.3.zip; \
     cd /var/www/.drush && wget https://ftp.drupal.org/files/projects/site_audit-7.x-1.15.zip && unzip site_audit-7.x-1.15.zip; \
     cd /var/www/.drush && rm *.zip; \
     chown -R www-data:www-data /var/www; \
+    sudo -u www-data drush cc drush;
 
     # Installation of PHP_CodeSniffer with Drupal coding standards.
     # See https://www.drupal.org/node/1419988#coder-composer
