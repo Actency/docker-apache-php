@@ -9,6 +9,11 @@ Available tags are:
 - 5.4 ([5.4/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.4/Dockerfile))
 - 5.3 ([5.3/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.3/Dockerfile))
 
+The image basically contains:
+
+- All php libraries needed for Drupal (gd, mbstring, mcrypt, zip, soap, pdo_mysql, mysqli, xsl, opcache, calendar)
+- Development tools for Drupal (xdebug, codesniffer, compass, less, node.js, grunt, gulp, composer, drush, phing, phpcpd, phpmetrics)
+
 # Example usage with docker-compose
 
     version: '2'
