@@ -11,7 +11,7 @@ Available tags are:
 
 The image basically contains:
 
-- All php libraries needed for Drupal (gd, mbstring, mcrypt, zip, soap, pdo_mysql, mysqli, xsl, opcache, calendar)
+- All php libraries needed for Drupal (gd, mbstring, mcrypt, zip, soap, pdo_mysql, mysqli, xsl, opcache, calendar, intl)
 - Development tools for Drupal (xdebug, codesniffer, compass, less, node.js, grunt, gulp, composer, drush, phing, phpcpd, phpmetrics)
 
 # Example usage with docker-compose

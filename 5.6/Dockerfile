@@ -29,7 +29,9 @@ RUN apt-get clean && apt-get update && apt-get install -y --fix-missing \
   wget \
   linux-libc-dev \
   libyaml-dev \
-  apt-transport-https
+  apt-transport-https \
+  zlib1g-dev \
+  libicu-dev
 
 # Install PECL packages
 COPY docker-php-pecl-install /usr/local/bin/
@@ -54,7 +56,8 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   mysqli \
   xsl \
   opcache \
-  calendar
+  calendar \
+  intl
 
 COPY core/memcached.conf /etc/memcached.conf
 
