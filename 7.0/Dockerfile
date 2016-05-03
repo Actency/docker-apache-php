@@ -36,7 +36,8 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   libyaml-dev \
   apt-transport-https \
   zlib1g-dev \
-  libicu-dev
+  libicu-dev \
+  libpq-dev
 
 # Install memcached for PHP 7
 RUN cd /tmp && git clone https://github.com/php-memcached-dev/php-memcached.git
@@ -58,7 +59,10 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   xsl \
   opcache \
   calendar \
-  intl
+  intl \
+  exif \
+  pgsql \
+  pdo_pgsql
 
 RUN pecl install yaml-beta && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 
