@@ -136,6 +136,9 @@ RUN ( \
 
 RUN a2enmod rewrite expires && service apache2 restart
 
+# Install Drupal Console for Drupal 8
+RUN curl https://drupalconsole.com/installer -L -o drupal.phar && mv drupal.phar /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
+
 # Our apache volume
 VOLUME /var/www/html
 
