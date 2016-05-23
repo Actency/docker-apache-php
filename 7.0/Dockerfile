@@ -62,7 +62,8 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   intl \
   exif \
   pgsql \
-  pdo_pgsql
+  pdo_pgsql \
+  ftp
 
 RUN pecl install yaml-beta && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 

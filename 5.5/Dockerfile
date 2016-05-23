@@ -61,7 +61,8 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   intl \
   exif \
   pgsql \
-  pdo_pgsql
+  pdo_pgsql \
+  ftp
 
 COPY core/memcached.conf /etc/memcached.conf
 
