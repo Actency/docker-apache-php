@@ -97,8 +97,8 @@ RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
 # Install xdebug. We need at least 2.4 version to have PHP 7 support.
-RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.4.0rc3.tgz && tar -xvzf xdebug-2.4.0rc3.tgz && cd xdebug-2.4.0RC3/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
-RUN cd /tmp/xdebug-2.4.0RC3 && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012/
+RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.4.0.tgz && tar -xvzf xdebug-2.4.0.tgz && cd xdebug-2.4.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
+RUN cd /tmp/xdebug-2.4.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012/
 RUN echo 'zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
