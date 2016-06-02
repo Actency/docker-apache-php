@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:7.0.4-apache
+FROM php:7.0.7-apache
 COPY config/php.ini /usr/local/etc/php/
 
 # ADD BASHRC CONFIG
