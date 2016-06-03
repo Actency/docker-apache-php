@@ -34,6 +34,9 @@ RUN apt-get clean && apt-get update && apt-get install -y --fix-missing \
   libicu-dev \
   libpq-dev
 
+# postgresql-client-9.5
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
+
 # Install PECL packages
 COPY docker-php-pecl-install /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-php-pecl-install
@@ -100,7 +103,7 @@ COPY core/memcached.conf /etc/memcached.conf
 
     # Installation of drush
     git clone https://github.com/drush-ops/drush.git /usr/local/src/drush; \
-    cd /usr/local/src/drush && git checkout 8.0.5; \
+    cd /usr/local/src/drush && git checkout 8.1.2; \
     ln -s /usr/local/src/drush/drush /usr/bin/drush; \
     cd /usr/local/src/drush && composer update && composer install; \
 
