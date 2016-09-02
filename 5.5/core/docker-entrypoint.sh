@@ -29,6 +29,3 @@ rm -f /var/run/apache2/apache2.pid
 
 # Start Apache in foreground
 /usr/sbin/apache2 -DFOREGROUND
-
-# Set timezone to Europe/Paris
-echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
