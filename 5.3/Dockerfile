@@ -79,6 +79,9 @@ RUN mkdir /var/www/.ssh/
 RUN chown -R www-data:www-data /var/www/
 RUN chmod -R 600 /var/www/.ssh/
 
+# Set timezone to Europe/Paris
+RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
 WORKDIR /var/www/html
 
 EXPOSE 80 9000
