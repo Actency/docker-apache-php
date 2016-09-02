@@ -127,6 +127,9 @@ ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
 ADD core/php-smtp.ini /usr/local/etc/php/conf.d/php-smtp.ini
 
 COPY config/apache2.conf /etc/apache2
+COPY core/envvars /etc/apache2
+COPY core/other-vhosts-access-log.conf /etc/apache2/conf-enabled/
+RUN rm /etc/apache2/sites-enabled/000-default.conf
 
 # Installation of Opcode cache
 RUN ( \
