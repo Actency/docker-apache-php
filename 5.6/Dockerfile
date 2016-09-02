@@ -133,6 +133,7 @@ ADD core/php-smtp.ini /usr/local/etc/php/conf.d/php-smtp.ini
 
 COPY config/apache2.conf /etc/apache2
 COPY core/envvars /etc/apache2
+RUN rm /etc/apache2/sites-enabled/000-default.conf
 RUN chown -R www-data:www-data /var/www
 
 # Installation of Opcode cache
