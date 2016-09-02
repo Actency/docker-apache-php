@@ -1,4 +1,7 @@
 #!/bin/bash
+# Set timezone to Europe/Paris
+echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
 set -e
 
 PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING:-"E_ALL & ~E_DEPRECATED & ~E_NOTICE"}

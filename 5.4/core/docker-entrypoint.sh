@@ -1,4 +1,7 @@
 #!/bin/bash -e
+# Set timezone to Europe/Paris
+echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
 set -e
 
 # Set the apache user and group to match the host user.
