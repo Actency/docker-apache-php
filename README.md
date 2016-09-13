@@ -24,8 +24,6 @@ The image basically contains:
       web:
         # actency/docker-apache-php available tags: latest, 7.0, 5.6, 5.5, 5.4, 5.3
         image: actency/docker-apache-php:7.0
-        # actency/docker-nginx-php available tags: latest, 5.6, 5.5, 5.4
-        #image: actency/docker-nginx-php:5.6
         ports:
           - "80:80"
           - "9000:9000"
