@@ -41,6 +41,20 @@ The image basically contains:
           - redis
           - tika
         tty: true
+        # Set logs driver to fluentd only if you enable the logs container
+        logging:
+          driver: fluentd
+          options:
+            fluentd-address: "127.0.0.1:24224"
+
+      # logs container - actency images
+      logs:
+        image: actency/docker-es-fluentd-kibana
+        ports:
+          - "8000:5601" # browse this port to see the logs in kibana
+          - "9200:9200"
+          - "9300:9300"
+          - "24224:24224"
 
       # database container - actency images
       database:
