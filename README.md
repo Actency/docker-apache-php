@@ -42,6 +42,7 @@ The image basically contains:
           - tika
         tty: true
         # Set logs driver to fluentd only if you enable the logs container
+        # Add this logging section to any other container if you want the logs to be sent in es-fluentd-kibana container
         logging:
           driver: fluentd
           options:
