@@ -64,7 +64,7 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   pdo_pgsql \
   ftp
 
-RUN pecl install yaml-beta && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
+RUN pecl install yaml-2.0.0 && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 
 COPY core/memcached.conf /etc/memcached.conf
 
