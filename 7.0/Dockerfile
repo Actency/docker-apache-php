@@ -2,10 +2,6 @@
 FROM php:7.0.11-apache
 COPY config/php.ini /usr/local/etc/php/
 
-# ADD BASHRC CONFIG
-COPY config/bashrc /root/
-RUN mv /root/bashrc /root/.bashrc
-
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget -y
 RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
@@ -89,6 +85,9 @@ RUN npm install -g grunt-cli
 # Installation of Gulp
 RUN npm install -g gulp
 
+# Installation of Bower
+RUN npm install -g bower
+
 # Installation of Composer
 RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
@@ -156,6 +155,10 @@ RUN chmod -R 600 /var/www/.ssh/
 
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
+# ADD BASHRC CONFIG
+COPY config/bashrc /root/
+RUN mv /root/bashrc /root/.bashrc
 
 # Expose 80 for apache, 9000 for xdebug
 EXPOSE 80 9000
