@@ -122,7 +122,7 @@ RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
 RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
 
 # Installation of Symfony console autocomplete
-RUN sudo -u www-data composer global require bamarni/symfony-console-autocomplete
+RUN composer global require bamarni/symfony-console-autocomplete
 
 # installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
