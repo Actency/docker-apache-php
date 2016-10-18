@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:7.0.11-apache
+FROM php:7.0.12-apache
 COPY config/php.ini /usr/local/etc/php/
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget -y
@@ -33,7 +33,8 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   apt-transport-https \
   zlib1g-dev \
   libicu-dev \
-  libpq-dev
+  libpq-dev \
+  bash-completion
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -119,6 +120,9 @@ RUN composer global require drupal/coder
 RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
 RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
 RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
+
+# Installation of Symfony console autocomplete
+composer global require bamarni/symfony-console-autocomplete
 
 # installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
