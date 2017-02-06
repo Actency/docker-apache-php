@@ -1,0 +1,14 @@
+# Use bash-completion, if available
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
+    . /usr/share/bash-completion/bash_completion
+
+alias ll='ls -al'
+alias drush='sudo -u www-data drush'
+alias git='sudo -u www-data git'
+alias wget='sudo -u www-data wget'
+alias ssh='sudo -u www-data ssh'
+alias drupal='sudo -u www-data drupal'
+alias php='sudo -u www-data php'
+alias composer='sudo -u www-data composer'
+alias gulp='sudo -u www-data gulp'
+alias bower='sudo -u www-data bower'
