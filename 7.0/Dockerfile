@@ -94,7 +94,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 8.1.2
+RUN cd /usr/local/src/drush && git checkout 8.1.15
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
