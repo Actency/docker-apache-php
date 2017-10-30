@@ -3,7 +3,8 @@
 This is the Actency Docker **Drupal** optimized images for apache-php.
 
 Available tags are:
-- 7.0-dev, latest ([7.0-dev/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.0-dev/Dockerfile))
+- 7.1, latest ([7.1/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.1/Dockerfile))
+- 7.0-dev ([7.0-dev/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.0-dev/Dockerfile))
 - 7.0 ([7.0/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.0/Dockerfile))
 - 5.6 ([5.6/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.6/Dockerfile))
 - 5.6-bcmath ([5.6-bcmath/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.6-bcmath/Dockerfile))
@@ -13,7 +14,7 @@ Available tags are:
 
 The image basically contains:
 
-- All php libraries needed for Drupal (gd, mbstring, mcrypt, zip, soap, pdo_mysql, mysqli, xsl, opcache, calendar, intl)
+- All php libraries needed for Drupal (gd, mbstring, mcrypt, zip, soap, pdo_mysql, mysqli, xsl, opcache, calendar, intl, bcmath)
 - Development tools for Drupal (xdebug, codesniffer, compass, less, node.js, grunt, gulp, composer, drush, phing, phpcpd, phpmetrics)
 - Much more...
 
@@ -24,8 +25,8 @@ The image basically contains:
     services:
       # web with xdebug - actency images
       web:
-        # actency/docker-apache-php available tags: latest, 7.0, 5.6, 5.5, 5.4, 5.3
-        image: actency/docker-apache-php:7.0
+        # actency/docker-apache-php available tags: latest, 7.1, 7.0, 5.6, 5.5, 5.4, 5.3
+        image: actency/docker-apache-php:7.1
         ports:
           - "80:80"
           - "9000:9000"
