@@ -72,7 +72,7 @@ COPY core/memcached.conf /etc/memcached.conf
   # install xdebug and codesniffer
   RUN apt-get install --fix-missing php5-xdebug -y; \
   pecl install xdebug; \
-  echo 'zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so' >> /usr/local/etc/php/php.ini; \
+  echo ';zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so' >> /usr/local/etc/php/php.ini; \
   touch /usr/local/etc/php/conf.d/xdebug.ini &&\
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -81,11 +81,12 @@ COPY core/memcached.conf /etc/memcached.conf
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini; \
 
     # SASS and Compass installation
-    gem install compass; \
+    gem install sass -v 3.4.22 ;\
+    gem install compass;
 
     # Installation node.js
-    curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -; \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs; \
+    RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
+    RUN apt-get install -y nodejs build-essential ;\
 
     # Installation of LESS
     npm update -g npm && \
