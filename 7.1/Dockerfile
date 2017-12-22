@@ -1,6 +1,8 @@
 # Pull base image.
-FROM php:7.1.8-apache
+FROM php:7.1.12-apache
 COPY config/php.ini /usr/local/etc/php/
+
+RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates -y
 RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
@@ -9,7 +11,7 @@ RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   imagemagick \
@@ -17,7 +19,6 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   sudo \
   git \
   vim \
-  php7.1-dev \
   memcached \
   libmemcached-tools \
   libmemcached-dev \
@@ -27,7 +28,6 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   libxml2-dev \
   libxslt1-dev \
   mysql-client \
-  php7.1-mysql \
   zip \
   wget \
   linux-libc-dev \
@@ -73,6 +73,9 @@ RUN useradd web -d /var/www -g www-data -s /bin/bash
 RUN usermod -aG sudo web
 RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+# Add sudo to www-data
+RUN echo 'www-data ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 # Install YAML extension
 RUN pecl install yaml-2.0.2 && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 
@@ -82,7 +85,8 @@ RUN pecl install apcu-5.1.8
 COPY core/memcached.conf /etc/memcached.conf
 
 # SASS and Compass installation
-RUN gem install compass
+RUN gem install sass -v 3.5.1 ;\
+    gem install compass;
 
 # Installation node.js
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
@@ -107,7 +111,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 8.1.13
+RUN cd /usr/local/src/drush && git checkout 8.1.15
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
@@ -116,12 +120,13 @@ RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.5.1.tgz && tar -xvzf xdebu
 RUN cd /tmp/xdebug-2.5.1 && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
 RUN echo 'zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_connect_back=0 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_host=docker_host >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini
+  echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_autostart=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_connect_back=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_log=/tmp/php7-xdebug.log' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo '#xdebug.remote_host=10.254.254.254' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo '#xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
@@ -191,12 +196,16 @@ RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tz
 # Expose 80 for apache, 9000 for xdebug
 EXPOSE 80 9000
 
-# Add web and root .bashrc config
+# Add web .bashrc config
+COPY config/bashrc /var/www/
+RUN mv /var/www/bashrc /var/www/.bashrc
+RUN chown www-data:www-data /var/www/.bashrc
+RUN echo "source .bashrc" >> /var/www/.profile ;\
+    chown www-data:www-data /var/www/.profile
+
+# Add root .bashrc config
 # When you "docker exec -it" into the container, you will be switched as web user and placed in /var/www/html
-RUN echo "exec su - web" > /root/.bashrc && \
-    echo ". .profile" > /var/www/.bashrc && \
-    echo "alias ll='ls -al'" > /var/www/.profile && \
-    echo "cd /var/www/html" >> /var/www/.profile
+RUN echo "exec su - web" > /root/.bashrc
 
 # Install symfony autocomplete for web user
 RUN sudo -u web composer global require bamarni/symfony-console-autocomplete
