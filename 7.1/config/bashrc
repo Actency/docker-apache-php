@@ -9,7 +9,7 @@ function xdebug() {
 
   case "$1" in
     on)
-        sudo sed -i 's/^;\(.*xdebug\.so\)/\1/' /usr/local/etc/php/php.ini
+        sudo sed -i 's/^;*\(.*xdebug\.so\)/\1/' /usr/local/etc/php/php.ini
         sudo service apache2 reload > /dev/null
         echo "xdebug on";
         ;;

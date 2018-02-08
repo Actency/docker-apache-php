@@ -36,7 +36,8 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   libicu-dev \
   libpq-dev \
   bash-completion \
-  htop
+  htop \
+  libldap2-dev
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -49,8 +50,9 @@ RUN touch /usr/local/etc/php/conf.d/memcached.ini &&\
 
 COPY docker-php-ext-install /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-php-ext-install
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-install \
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
+RUN docker-php-ext-install \
   gd \
   mbstring \
   mcrypt \
@@ -66,7 +68,8 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   pgsql \
   pdo_pgsql \
   ftp \
-  bcmath
+  bcmath \
+  ldap
 
 # Create new web user for apache and grant sudo without password
 RUN useradd web -d /var/www -g www-data -s /bin/bash
@@ -84,8 +87,11 @@ RUN pecl install apcu-5.1.8
 
 COPY core/memcached.conf /etc/memcached.conf
 
+# Install sass and gem dependency
+RUN apt-get install --fix-missing automake ruby2.1-dev libtool -y
+
 # SASS and Compass installation
-RUN gem install sass -v 3.5.1 ;\
+RUN gem install sass -v 3.5.4 ;\
     gem install compass;
 
 # Installation node.js
@@ -111,7 +117,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 8.1.15
+RUN cd /usr/local/src/drush && git checkout 9.1.0
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
@@ -125,8 +131,8 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_connect_back=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_log=/tmp/php7-xdebug.log' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo '#xdebug.remote_host=10.254.254.254' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
-  echo '#xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
+  echo 'xdebug.remote_host=docker_host' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
