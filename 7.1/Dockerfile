@@ -4,7 +4,7 @@ COPY config/php.ini /usr/local/etc/php/
 
 RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates -y
+RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
@@ -22,7 +22,7 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   memcached \
   libmemcached-tools \
   libmemcached-dev \
-  libpng12-dev \
+  libpng-dev \
   libjpeg62-turbo-dev \
   libmcrypt-dev \
   libxml2-dev \
@@ -37,7 +37,8 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   libpq-dev \
   bash-completion \
   htop \
-  libldap2-dev
+  libldap2-dev \
+  libssl-dev
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -88,10 +89,10 @@ RUN pecl install apcu-5.1.8
 COPY core/memcached.conf /etc/memcached.conf
 
 # Install sass and gem dependency
-RUN apt-get install --fix-missing automake ruby2.1-dev libtool -y
+RUN apt-get install --fix-missing automake ruby2.3-dev libtool -y
 
 # SASS and Compass installation
-RUN gem install sass -v 3.5.4 ;\
+RUN gem install sass -v 3.5.6 ;\
     gem install compass;
 
 # Installation node.js
