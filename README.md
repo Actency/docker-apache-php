@@ -3,10 +3,12 @@
 This is the Actency Docker **Drupal** optimized images for apache-php.
 
 Available tags are:
-- 7.2, latest ([7.2/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.2/Dockerfile))+
+- 7.2-1.0, latest ([7.2-1.0/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.2-1.0/Dockerfile))
+- 7.2 ([7.2/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.2/Dockerfile))
 - 7.1 ([7.1/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.1/Dockerfile))
 - 7.0-dev ([7.0-dev/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.0-dev/Dockerfile))
 - 7.0 ([7.0/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.0/Dockerfile))
+- 5.6 ([5.6-ldap/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.6-ldap/Dockerfile))
 - 5.6 ([5.6/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.6/Dockerfile))
 - 5.6-bcmath ([5.6-bcmath/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.6-bcmath/Dockerfile))
 - 5.5 ([5.5/Dockerfile](https://github.com/Actency/docker-apache-php/tree/master/5.5/Dockerfile))
@@ -26,7 +28,7 @@ The image basically contains:
     services:
       # web with xdebug - actency images
       web:
-        # actency/docker-apache-php available tags: latest, 7.1, 7.0, 5.6, 5.5, 5.4, 5.3
+        # actency/docker-apache-php available tags: latest,7.2-1.0, 7.2, 7.1, 7.0, 5.6, 5.5, 5.4, 5.3
         image: actency/docker-apache-php:7.1
         ports:
           - "80:80"
