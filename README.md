@@ -36,6 +36,7 @@ The image basically contains:
         environment:
           - SERVERNAME=example.local
           - SERVERALIAS=example2.local *.example2.local
+          - DRUSH_VERSION = 8 / 9
           - DOCUMENTROOT=htdocs
         volumes:
           - /home/docker/projets/example/:/var/www/html/
