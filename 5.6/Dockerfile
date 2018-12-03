@@ -71,7 +71,7 @@ COPY core/memcached.conf /etc/memcached.conf
 
   # install xdebug and codesniffer
   RUN apt-get install --fix-missing php5-xdebug -y; \
-  pecl install xdebug; \
+  pecl install xdebug-2.5.5; \
   echo ';zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so' >> /usr/local/etc/php/php.ini; \
   touch /usr/local/etc/php/conf.d/xdebug.ini &&\
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini &&\
