@@ -39,7 +39,7 @@ for ext in "${exts[@]}"; do
 	(
 		cd "$ext"
 		[ -e Makefile ] || docker-php-ext-configure "$ext"
-		make
+		make -j $(nproc)
 		make install
 		find modules -maxdepth 1 -name '*.so' -exec basename '{}' ';' | xargs --no-run-if-empty --verbose docker-php-ext-enable
 		make clean
