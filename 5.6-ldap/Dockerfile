@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:5.6-apache
+FROM php:5.6-apache-jessie
 COPY config/php.ini /usr/local/etc/php/
 
 # ADD BASHRC CONFIG
