@@ -216,7 +216,7 @@ RUN echo "exec su - web" > /root/.bashrc
 
 # Install symfony autocomplete for web user
 RUN sudo -u web composer global require bamarni/symfony-console-autocomplete
-RUN echo "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/var/www/.composer/vendor/bamarni/symfony-console-autocomplete/" >> /var/www/.profile
+RUN echo "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/var/www/.composer/vendor/bin" >> /var/www/.profile
 RUN echo 'eval "$(symfony-autocomplete)"' >> /var/www/.profile
 
 # Set and run a custom entrypoint
