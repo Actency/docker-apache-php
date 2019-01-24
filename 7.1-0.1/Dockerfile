@@ -127,12 +127,6 @@ RUN cd /usr/local/src/drush9 && git checkout 9.1.0
 RUN cd /usr/local/src/drush9 && composer update && composer install
 RUN ln -s /usr/local/src/drush9/drush /usr/bin/drush9
 
-# Installation of drush
-RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 9.1.0
-RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
-RUN cd /usr/local/src/drush && composer update && composer install
-
 # Install xdebug. We need at least 2.4 version to have PHP 7 support.
 RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.5.1.tgz && tar -xvzf xdebug-2.5.1.tgz && cd xdebug-2.5.1/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
 RUN cd /tmp/xdebug-2.5.1 && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
