@@ -8,7 +8,7 @@ sed -i "s/MY_OUTGOING_ADDRESS/$OUTGOING_ADDRESS/g" /usr/local/etc/msmtprc
 
 
 # set msmtp permissions
-chmod 600 /usr/local/etc/msmtprc && chown web /usr/local/etc/msmtprc
+chmod 600 /usr/local/etc/msmtprc && chown www-data /usr/local/etc/msmtprc
 
 # Set the apache user and group to match the host user.
 # This script will change the www-data UID/GID in the container from to 33 (default) to the UID/GID of the host user, if the current host user is not root.
