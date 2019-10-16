@@ -78,9 +78,9 @@ RUN pecl install mcrypt-1.0.1 && \
     docker-php-ext-enable mcrypt
 
 # Create new web user for apache and grant sudo without password
-#RUN useradd web -d /var/www -g www-data -s /bin/bash
-#RUN usermod -aG sudo web
-#RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd web -d /var/www -g www-data -s /bin/bash
+RUN usermod -aG sudo web
+RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Add sudo to www-data
 RUN echo 'www-data ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
