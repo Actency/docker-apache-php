@@ -16,12 +16,20 @@ RUN apt-get clean && apt-get update && \
       graphviz \
       php5-mcrypt php5-curl php5-memcached php5-xdebug php5-dev php-pear php-soap mysql-client php5-mysql php-apc \
       make curl sudo git \
-      ruby-dev rubygems \
       zip \
       wget \
       vim \
       linux-libc-dev \
       libyaml-dev
+
+# Installation of ruby
+RUN cd /tmp  && \
+  wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.0-rc1.tar.gz && \
+  tar -xzf ruby-2.4.0-rc1.tar.gz && \
+  cd ruby-2.4.0-rc1/ && \
+  ./configure && \
+  make && \
+  make install
 
 # Install PECL packages
 # COPY docker-php-pecl-install /usr/local/bin/
