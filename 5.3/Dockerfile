@@ -50,8 +50,7 @@ RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
 
 # Installation of LESS
-RUN npm update -g npm && \
-npm install -g less && npm install -g less-plugin-clean-css
+RUN npm install -g less && npm install -g less-plugin-clean-css
 
 # Installation of Grunt
 RUN npm install -g grunt-cli
