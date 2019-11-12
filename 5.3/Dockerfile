@@ -82,6 +82,9 @@ RUN sed -i 's/^\(.*xdebug\.so\)/;\1/' /etc/php5/cli/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_port=9000' >> /etc/php5/cli/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_log="/var/log/xdebug.log"' >> /etc/php5/cli/conf.d/xdebug.ini
 
+# Declare ServerName to avoid an error
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
 # installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
 ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
