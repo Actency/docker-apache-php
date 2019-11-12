@@ -72,6 +72,16 @@ RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
   chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 
+# Configuration of Xdebug
+RUN sed -i 's/^\(.*xdebug\.so\)/;\1/' /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_enable=on' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_autostart=off' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_connect_back=off' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_host=docker_host' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.idekey=PHPSTORM' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_port=9000' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_log="/var/log/xdebug.log"' >> /etc/php5/cli/conf.d/xdebug.ini
+
 # installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
 ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
