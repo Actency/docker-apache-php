@@ -31,8 +31,7 @@ RUN cd /tmp  && \
   make && \
   make install
 
-# Install PECL packages
-# COPY docker-php-pecl-install /usr/local/bin/
+# Installation of PECL packages
 RUN pecl install uploadprogress memcache yaml-1.2.0
 RUN echo "extension=yaml.so" >> /etc/php5/apache2/conf.d/yaml.ini
 
@@ -42,10 +41,10 @@ COPY core/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN a2enmod rewrite
 
-# SASS and Compass installation
+# Installation of SASS and Compass
 RUN gem install compass
 
-# Installation node.js
+# Installation of node.js
 RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
 
@@ -62,7 +61,7 @@ RUN npm install -g gulp
 RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
-# Installation of drush
+# Installation of Drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
 RUN cd /usr/local/src/drush && git checkout 7.4.0
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
@@ -85,7 +84,7 @@ RUN sed -i 's/^\(.*xdebug\.so\)/;\1/' /etc/php5/cli/conf.d/xdebug.ini &&\
 # Declare ServerName to avoid an error
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-# installation of ssmtp
+# Installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
 ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
 ADD core/php-smtp.ini /etc/php5/apache2/conf.d/php-smtp.ini
@@ -94,7 +93,7 @@ RUN a2enmod rewrite expires
 
 VOLUME /var/www/html
 
-# create directory for ssh keys
+# Create directory for ssh keys
 RUN mkdir /var/www/.ssh/
 RUN chown -R www-data:www-data /var/www/
 RUN chmod -R 600 /var/www/.ssh/
