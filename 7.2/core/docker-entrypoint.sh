@@ -24,6 +24,14 @@ sed -i "s/MYSERVERNAME/$SERVERNAME/g" /etc/apache2/apache2.conf
 sed -i "s/MYSERVERALIAS/$SERVERALIAS/g" /etc/apache2/apache2.conf
 sed -i "s/MYDOCUMENTROOT/$DOCUMENTROOT/g" /etc/apache2/apache2.conf
 
+# Configure msmtp
+sed -i "s/MY_SMTP/$SMTP/g" /usr/local/etc/msmtprc
+sed -i "s/MY_EMAIL_DOMAIN/$EMAIL_DOMAIN/g" /usr/local/etc/msmtprc
+sed -i "s/MY_OUTGOING_ADDRESS/$OUTGOING_ADDRESS/g" /usr/local/etc/msmtprc
+
+# set msmtp permissions
+chmod 600 /usr/local/etc/msmtprc && chown web /usr/local/etc/msmtprc
+
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
