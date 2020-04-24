@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:7.2.22-apache
+FROM php:7.2.30-apache
 COPY config/php.ini /usr/local/etc/php/
 
 RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
@@ -10,8 +10,6 @@ RUN echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.lis
 RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
-
-RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
 
 RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get install --fix-missing -y \
   ruby-dev \
@@ -42,6 +40,8 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   htop \
   libldap2-dev \
   libssl-dev \
+  iputils-ping \
+  net-tools \
   npm
 
 # postgresql-client-9.5
@@ -122,9 +122,8 @@ RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush 8 & 9
-RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cp -r /usr/local/src/drush/ /usr/local/src/drush8/
-RUN cp -r /usr/local/src/drush/ /usr/local/src/drush9/
+RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush8
+RUN cp -r /usr/local/src/drush8/ /usr/local/src/drush9/
 RUN cd /usr/local/src/drush8 && git checkout -f 8.1.0
 RUN cd /usr/local/src/drush8 && composer update && composer install
 RUN ln -s /usr/local/src/drush8/drush /usr/bin/drush8
@@ -144,10 +143,6 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_log=/tmp/php7-xdebug.log' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_host=docker_host' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
-
-#RUN rm -rf /var/www/html && \
-#  mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
-#  chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 && \
   chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www
