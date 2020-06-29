@@ -1,0 +1,8 @@
+alias ll='ls -al'
+alias drush='sudo -u www-data drush'
+alias git='sudo -u www-data git'
+alias ssh='sudo -u www-data ssh'
+alias drupal='sudo -u www-data drupal'
+
+alias drupalcs="phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,js,css,info,txt'"
+alias drupalbp="phpcs --standard=DrupalPractice --extensions=php,module,inc,install,test,profile,theme,js,css,info,txt,md"

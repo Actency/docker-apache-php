@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:7.2.30-apache
+FROM php:7.2.10-apache
 COPY config/php.ini /usr/local/etc/php/
 
 RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
@@ -19,7 +19,6 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   sudo \
   git \
   vim \
-  nano \
   memcached \
   libmemcached-tools \
   libmemcached-dev \
@@ -28,7 +27,7 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   libmcrypt-dev \
   libxml2-dev \
   libxslt1-dev \
-  mariadb-client \
+  mysql-client \
   zip \
   wget \
   linux-libc-dev \
@@ -39,10 +38,7 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   bash-completion \
   htop \
   libldap2-dev \
-  libssl-dev \
-  iputils-ping \
-  net-tools \
-  npm
+  libssl-dev
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -64,6 +60,7 @@ RUN docker-php-ext-install \
   soap \
   pdo_mysql \
   mysqli \
+  xsl \
   opcache \
   calendar \
   intl \
@@ -78,9 +75,9 @@ RUN pecl install mcrypt-1.0.1 && \
     docker-php-ext-enable mcrypt
 
 # Create new web user for apache and grant sudo without password
-RUN useradd web -d /var/www -g www-data -s /bin/bash
-RUN usermod -aG sudo web
-RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+#RUN useradd web -d /var/www -g www-data -s /bin/bash
+#RUN usermod -aG sudo web
+#RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Add sudo to www-data
 RUN echo 'www-data ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -94,13 +91,13 @@ RUN pecl install apcu-5.1.8
 COPY core/memcached.conf /etc/memcached.conf
 
 # Install sass and gem dependency
-RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
+RUN apt-get install --fix-missing automake ruby2.3-dev libtool -y
 
 # SASS and Compass installation
-RUN gem install sass -v 3.7.3 ;\
+RUN gem install sass -v 3.5.6 ;\
     gem install compass;
 
-# Installation ex
+# Installation node.js
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 	apt-get update && apt-get install -y nodejs && \
 	npm install npm@latest -g
@@ -122,8 +119,9 @@ RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush 8 & 9
-RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush8
-RUN cp -r /usr/local/src/drush8/ /usr/local/src/drush9/
+RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
+RUN cp -r /usr/local/src/drush/ /usr/local/src/drush8/
+RUN cp -r /usr/local/src/drush/ /usr/local/src/drush9/
 RUN cd /usr/local/src/drush8 && git checkout -f 8.1.0
 RUN cd /usr/local/src/drush8 && composer update && composer install
 RUN ln -s /usr/local/src/drush8/drush /usr/bin/drush8
@@ -144,6 +142,10 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_host=docker_host' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
 
+#RUN rm -rf /var/www/html && \
+#  mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
+#  chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 && \
   chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www
 
@@ -154,11 +156,12 @@ RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
 RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
 RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
 
-# install msmtp
-RUN set -x \
-    && DEBIAN_FRONTEND=noninteractive \
-    && apt-get update && apt-get install -y --no-install-recommends msmtp && rm -r /var/lib/apt/lists/*
-ADD core/msmtprc.conf /usr/local/etc/msmtprc
+# # Installation of Symfony console autocomplete
+# RUN composer global require bamarni/symfony-console-autocomplete
+
+# installation of ssmtp
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
+ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
 ADD core/php-smtp.ini /usr/local/etc/php/conf.d/php-smtp.ini
 
 COPY config/apache2.conf /etc/apache2
@@ -217,6 +220,14 @@ RUN chown www-data:www-data /var/www/.bashrc
 RUN echo "source .bashrc" >> /var/www/.profile ;\
     chown www-data:www-data /var/www/.profile
 
+# Add root .bashrc config
+# When you "docker exec -it" into the container, you will be switched as web user and placed in /var/www/html
+#RUN echo "exec su - www-data" > /root/.bashrc
+
+# Install symfony autocomplete for web user
+#RUN sudo -u www-data composer global require bamarni/symfony-console-autocomplete
+#RUN echo "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/var/www/.composer/vendor/bamarni/symfony-console-autocomplete/" >> /var/www/.profile
+#RUN echo 'eval "$(symfony-autocomplete)"' >> /var/www/.profile
 
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /

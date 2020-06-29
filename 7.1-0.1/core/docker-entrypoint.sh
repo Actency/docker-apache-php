@@ -27,8 +27,6 @@ sed -i "s/MYDOCUMENTROOT/$DOCUMENTROOT/g" /etc/apache2/apache2.conf
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
-
-#Remove symlink to avoid conflict in case of rebooting container
 if [ -e /usr/bin/drush ]; then 
   rm -f /usr/bin/drush
 fi
@@ -42,5 +40,3 @@ fi
 
 # Start Apache in foreground
 /usr/sbin/apache2 -DFOREGROUND
-
-
