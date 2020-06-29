@@ -33,7 +33,8 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   linux-libc-dev \
   libyaml-dev \
   zlib1g-dev \
-  libicu-dev \
+  libicu-dev=57.1-6+deb9u4 \
+  icu-devtools=57.1-6+deb9u4 \
   libpq-dev \
   bash-completion \
   htop \
