@@ -33,7 +33,8 @@ RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get ins
   linux-libc-dev \
   libyaml-dev \
   zlib1g-dev \
-  libicu-dev \
+  libicu-dev=57.1-6+deb9u4 \
+  icu-devtools=57.1-6+deb9u4 \
   libpq-dev \
   bash-completion \
   htop \
@@ -45,7 +46,7 @@ RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo 
 
 # Install memcached for PHP 7
 RUN cd /tmp && git clone https://github.com/php-memcached-dev/php-memcached.git
-RUN cd /tmp/php-memcached && sudo git checkout php7 && phpize && ./configure --disable-memcached-sasl && make && make install
+RUN cd /tmp/php-memcached && sudo git checkout php7 && phpize && ./configure --disable-memcached-sasl && make -j$(nproc) && make install
 RUN touch /usr/local/etc/php/conf.d/memcached.ini &&\
  echo "extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcached.so" >> /usr/local/etc/php/conf.d/memcached.ini
 
@@ -123,7 +124,7 @@ RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
 # Install xdebug. We need at least 2.4 version to have PHP 7 support.
-RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.5.1.tgz && tar -xvzf xdebug-2.5.1.tgz && cd xdebug-2.5.1/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
+RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.5.1.tgz && tar -xvzf xdebug-2.5.1.tgz && cd xdebug-2.5.1/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make -j$(nproc) && make install
 RUN cd /tmp/xdebug-2.5.1 && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
 RUN echo 'zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
