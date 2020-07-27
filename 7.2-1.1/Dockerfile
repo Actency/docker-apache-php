@@ -159,9 +159,11 @@ RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sni
 # # Installation of Symfony console autocomplete
 # RUN composer global require bamarni/symfony-console-autocomplete
 
-# installation of ssmtp
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
-ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
+# install msmtp
+RUN set -x \
+    && DEBIAN_FRONTEND=noninteractive \
+    && apt-get update && apt-get install -y --no-install-recommends msmtp && rm -r /var/lib/apt/lists/*
+ADD core/msmtprc.conf /usr/local/etc/msmtprc
 ADD core/php-smtp.ini /usr/local/etc/php/conf.d/php-smtp.ini
 
 COPY config/apache2.conf /etc/apache2

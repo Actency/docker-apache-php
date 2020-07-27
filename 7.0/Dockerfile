@@ -69,6 +69,9 @@ RUN pecl install yaml-2.0.0 && echo "extension=yaml.so" > /usr/local/etc/php/con
 
 COPY core/memcached.conf /etc/memcached.conf
 
+# Install sass and gem dependency
+RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
+
 # SASS and Compass installation
 RUN gem install compass
 

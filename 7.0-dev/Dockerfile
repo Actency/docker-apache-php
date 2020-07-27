@@ -73,6 +73,9 @@ RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN pecl install yaml-2.0.0 && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 
+# Install sass and gem dependency
+RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
+
 COPY core/memcached.conf /etc/memcached.conf
 
 # SASS and Compass installation

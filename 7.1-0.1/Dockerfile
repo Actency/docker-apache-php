@@ -56,12 +56,10 @@ RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 RUN docker-php-ext-install \
   gd \
   mbstring \
-  mcrypt \
   zip \
   soap \
   pdo_mysql \
   mysqli \
-  xsl \
   opcache \
   calendar \
   intl \
