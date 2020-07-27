@@ -1,13 +1,17 @@
 # Pull base image.
-FROM php:7.0.12-apache
+FROM php:7.0.33-apache
 COPY config/php.ini /usr/local/etc/php/
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing wget -y
+RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
+
+RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
+RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   imagemagick \
@@ -15,27 +19,27 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   sudo \
   git \
   vim \
-  php7.0-dev \
   memcached \
   libmemcached-tools \
   libmemcached-dev \
-  libpng12-dev \
+  libpng-dev \
   libjpeg62-turbo-dev \
   libmcrypt-dev \
   libxml2-dev \
   libxslt1-dev \
   mysql-client \
-  php5-mysqlnd \
   zip \
   wget \
   linux-libc-dev \
   libyaml-dev \
-  apt-transport-https \
   zlib1g-dev \
-  libicu-dev \
+  libicu-dev=57.1-6+deb9u4 \
+  icu-devtools=57.1-6+deb9u4 \
   libpq-dev \
   bash-completion \
-  htop
+  htop \
+  libldap2-dev \
+  libssl-dev
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -66,28 +70,23 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
   pdo_pgsql \
   ftp
 
-# Create new web user for apache and grant sudo without password
-RUN useradd web -d /var/www -g www-data -s /bin/bash
-RUN usermod -aG sudo web
-RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
 RUN pecl install yaml-2.0.0 && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
-
-# Install sass and gem dependency
-RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
 
 COPY core/memcached.conf /etc/memcached.conf
 
+# Install sass and gem dependency
+#RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
+
 # SASS and Compass installation
-RUN gem install compass
+RUN gem install sass -v 3.7.3 ;\
+    gem install compass;
 
 # Installation node.js
-RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
+RUN apt-get install -y nodejs build-essential
 
 # Installation of LESS
-RUN npm update -g npm && \
-npm install -g less && npm install -g less-plugin-clean-css
+RUN npm install -g less && npm install -g less-plugin-clean-css
 
 # Installation of Grunt
 RUN npm install -g grunt-cli
@@ -104,7 +103,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Installation of drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 8.1.5
+RUN cd /usr/local/src/drush && git checkout 8.1.2
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
@@ -121,7 +120,7 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
 
 RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
-  chown -R web:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+  chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 
 # Installation of PHP_CodeSniffer with Drupal coding standards.
 # See https://www.drupal.org/node/1419988#coder-composer
@@ -163,28 +162,20 @@ VOLUME /var/www/html
 
 # create directory for ssh keys
 RUN mkdir /var/www/.ssh/
-RUN chown -R web:www-data /var/www/
+RUN chown -R www-data:www-data /var/www/
 RUN chmod -R 600 /var/www/.ssh/
 
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
+# ADD BASHRC CONFIG
+COPY config/bashrc /root/
+RUN mv /root/bashrc /root/.bashrc
+
 # Expose 80 for apache, 9000 for xdebug
 EXPOSE 80 9000
 
-# Add web and root .bashrc config
-# When you "docker exec -it" into the container, you will be switched as web user and placed in /var/www/html
-RUN echo "exec su - web" > /root/.bashrc && \
-    echo ". .profile" > /var/www/.bashrc && \
-    echo "alias ll='ls -al'" > /var/www/.profile && \
-    echo "cd /var/www/html" >> /var/www/.profile
-
-# Install symfony autocomplete for web user
-RUN sudo -u web composer global require bamarni/symfony-console-autocomplete
-RUN echo "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/var/www/.composer/vendor/bamarni/symfony-console-autocomplete/" >> /var/www/.profile
-RUN echo 'eval "$(symfony-autocomplete)"' >> /var/www/.profile
-
-# Set and run a custom entrypoint
+# Set a custom entrypoint.
 COPY core/docker-entrypoint.sh /
-RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
