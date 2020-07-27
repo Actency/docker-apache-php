@@ -1,5 +1,5 @@
 # Pull base image.
-FROM php:7.2.10-apache
+FROM php:7.2.30-apache
 COPY config/php.ini /usr/local/etc/php/
 
 RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
