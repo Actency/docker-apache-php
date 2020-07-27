@@ -1,13 +1,17 @@
 # Pull base image.
-FROM php:7.0.12-apache
+FROM php:7.0.33-apache
 COPY config/php.ini /usr/local/etc/php/
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing wget -y
+RUN docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql
+
+RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list
 RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
+RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get clean && apt-get update && apt-cache search php-mysql && apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   imagemagick \
@@ -15,26 +19,27 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   sudo \
   git \
   vim \
-  php7.0-dev \
   memcached \
   libmemcached-tools \
   libmemcached-dev \
-  libpng12-dev \
+  libpng-dev \
   libjpeg62-turbo-dev \
   libmcrypt-dev \
   libxml2-dev \
   libxslt1-dev \
   mysql-client \
-  php5-mysqlnd \
   zip \
   wget \
   linux-libc-dev \
   libyaml-dev \
-  apt-transport-https \
   zlib1g-dev \
-  libicu-dev \
+  libicu-dev=57.1-6+deb9u4 \
+  icu-devtools=57.1-6+deb9u4 \
   libpq-dev \
-  bash-completion
+  bash-completion \
+  htop \
+  libldap2-dev \
+  libssl-dev
 
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-9.5
@@ -70,10 +75,11 @@ RUN pecl install yaml-2.0.0 && echo "extension=yaml.so" > /usr/local/etc/php/con
 COPY core/memcached.conf /etc/memcached.conf
 
 # Install sass and gem dependency
-RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
+#RUN apt-get install --fix-missing automake ruby2.5-dev libtool -y
 
 # SASS and Compass installation
-RUN gem install compass
+RUN gem install sass -v 3.7.3 ;\
+    gem install compass;
 
 # Installation node.js
 RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
