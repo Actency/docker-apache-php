@@ -76,9 +76,8 @@ RUN npm install -g gulp
 # Installation of Bower
 RUN npm install -g bower
 
-# Installation of Composer
-RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
-RUN cd /usr/src && mv composer.phar /usr/bin/composer
+##Fix composer version, to use default (v2) remove --version=1.10.17
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer --version=1.10.17
 
 # Installation of drush 8 & 9
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
