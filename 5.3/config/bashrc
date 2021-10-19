@@ -3,3 +3,49 @@ alias drush='sudo -u www-data drush'
 alias git='sudo -u www-data git'
 alias wget='sudo -u www-data wget'
 alias ssh='sudo -u www-data ssh'
+
+# For use xdebug on/off/status.
+function xdebug() {
+  echo_error() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
+  echo_in_red() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
+  echo_in_green() { printf "\033[0;32m%s\n\033[0m" "$*" >&2; }
+  echo_in_orange() { printf "\033[0;33m%s\n\033[0m" "$*" >&2; }
+  echo_in_cyan() { printf "\033[0;36m%s\n\033[0m" "$*" >&2; }
+  xdb_usage() {
+    echo_in_cyan 'Using the xdebug function :';
+    echo_in_cyan '';
+    echo_in_cyan 'on                         Enables the Xdebug extension of PHP';
+    echo_in_cyan 'off                        Disables the Xdebug extension of PHP';
+    echo_in_cyan 'status                     Allows to know the status of the Xdebug extension of PHP';
+  }
+  ZendExtensionXdebugSoPATH=/etc/php5/cli/conf.d/xdebug.ini
+
+  if [ -f $ZendExtensionXdebugSoPATH ]; then
+      case "$1" in
+        on)
+            sudo sed -i 's/^;*\(.*xdebug\.so\)/\1/' $ZendExtensionXdebugSoPATH
+            sudo service apache2 reload > /dev/null
+            echo_in_green 'xdebug on';
+            ;;
+        off)
+            sudo sed -i 's/^\(.*xdebug\.so\)/;\1/' $ZendExtensionXdebugSoPATH
+            sudo service apache2 reload > /dev/null
+            echo_in_red 'xdebug off';
+            ;;
+        status)
+            XdebugConfigFirstChar=$(grep xdebug.so $ZendExtensionXdebugSoPATH | cut -c1-1)
+            if [[ $XdebugConfigFirstChar != ";" ]]; then
+                echo_in_orange 'Xdebug is enable !';
+            else
+                echo_in_orange 'Xdebug is disable !'
+            fi
+            ;;
+        *)
+            xdb_usage
+      esac
+  else
+      echo_error "ERROR :"
+      echo_error "The file \"$ZendExtensionXdebugSoPATH\" is not found !"
+      echo_error "The function cannot work properly !!!"
+  fi
+}

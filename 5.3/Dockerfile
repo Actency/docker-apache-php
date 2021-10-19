@@ -16,15 +16,22 @@ RUN apt-get clean && apt-get update && \
       graphviz \
       php5-mcrypt php5-curl php5-memcached php5-xdebug php5-dev php-pear php-soap mysql-client php5-mysql php-apc \
       make curl sudo git \
-      ruby-dev rubygems \
       zip \
       wget \
       vim \
       linux-libc-dev \
       libyaml-dev
 
-# Install PECL packages
-# COPY docker-php-pecl-install /usr/local/bin/
+# Installation of ruby
+RUN cd /tmp  && \
+  wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.0-rc1.tar.gz && \
+  tar -xzf ruby-2.4.0-rc1.tar.gz && \
+  cd ruby-2.4.0-rc1/ && \
+  ./configure && \
+  make && \
+  make install
+
+# Installation of PECL packages
 RUN pecl install uploadprogress memcache yaml-1.2.0
 RUN echo "extension=yaml.so" >> /etc/php5/apache2/conf.d/yaml.ini
 
@@ -34,16 +41,15 @@ COPY core/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN a2enmod rewrite
 
-# SASS and Compass installation
+# Installation of SASS and Compass
 RUN gem install compass
 
-# Installation node.js
+# Installation of node.js
 RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
 
 # Installation of LESS
-RUN npm update -g npm && \
-npm install -g less && npm install -g less-plugin-clean-css
+RUN npm install -g less && npm install -g less-plugin-clean-css
 
 # Installation of Grunt
 RUN npm install -g grunt-cli
@@ -55,9 +61,9 @@ RUN npm install -g gulp
 RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
-# Installation of drush
+# Installation of Drush
 RUN git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-RUN cd /usr/local/src/drush && git checkout 6.2.0
+RUN cd /usr/local/src/drush && git checkout 7.4.0
 RUN ln -s /usr/local/src/drush/drush /usr/bin/drush
 RUN cd /usr/local/src/drush && composer update && composer install
 
@@ -65,7 +71,20 @@ RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
   chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 
-# installation of ssmtp
+# Configuration of Xdebug
+RUN sed -i 's/^\(.*xdebug\.so\)/;\1/' /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_enable=on' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_autostart=off' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_connect_back=off' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_host=docker_host' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.idekey=PHPSTORM' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_port=9000' >> /etc/php5/cli/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_log="/var/log/xdebug.log"' >> /etc/php5/cli/conf.d/xdebug.ini
+
+# Declare ServerName to avoid an error
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
+# Installation of ssmtp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y ssmtp && rm -r /var/lib/apt/lists/*
 ADD core/ssmtp.conf /etc/ssmtp/ssmtp.conf
 ADD core/php-smtp.ini /etc/php5/apache2/conf.d/php-smtp.ini
@@ -74,7 +93,7 @@ RUN a2enmod rewrite expires
 
 VOLUME /var/www/html
 
-# create directory for ssh keys
+# Create directory for ssh keys
 RUN mkdir /var/www/.ssh/
 RUN chown -R www-data:www-data /var/www/
 RUN chmod -R 600 /var/www/.ssh/
