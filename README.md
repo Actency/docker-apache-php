@@ -3,7 +3,8 @@
 This is the Actency Docker **Drupal** optimized images for apache-php.
 
 Available tags are:
-- 8.0.1 latest ([8.0.1/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/8.0.1/Dockerfile))
+- 8.1 latest ([8.0.1/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/8.1/Dockerfile))
+- 8.0.1 ([8.0.1/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/8.0.1/Dockerfile))
 - 7.4 ([7.4/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.4/Dockerfile))
 - 7.3 ([7.3/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.3.12/Dockerfile))
 - 7.2 ([7.2/Dockerfile](https://github.com/Actency/docker-apache-php/blob/master/7.2/Dockerfile))

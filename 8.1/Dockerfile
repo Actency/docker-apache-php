@@ -3,7 +3,7 @@
 # - it is now required to install oniguruma lib for mbstring
 
 # Pull base image.
-FROM php:8.0.1-apache
+FROM php:8.1-apache
 
 # Install tools
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
@@ -43,7 +43,7 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
 # postgresql-client-9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list && apt-get update && apt-get install -y postgresql-client-11
 
-RUN pecl install mcrypt-1.0.4 && \
+RUN pecl install mcrypt && \
   docker-php-ext-enable mcrypt
 
 # Create new web user for apache and grant sudo without password
@@ -52,7 +52,7 @@ RUN usermod -aG sudo web
 RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Install YAML extension
-RUN pecl install yaml-2.2.1 && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
+RUN pecl install yaml && echo "extension=yaml.so" > /usr/local/etc/php/conf.d/ext-yaml.ini
 
 # Install APCu extension
 RUN pecl install apcu
@@ -65,7 +65,7 @@ RUN gem install sass -v 3.5.6 ;\
   gem install compass;
 
 # Installation node.js
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get update && apt-get install -y nodejs && npm install npm@latest -g
+RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - && apt-get update && apt-get install -y nodejs && npm install npm@latest -g
 
 # Installation of LESS
 RUN npm install -g less && npm install -g less-plugin-clean-css
@@ -147,9 +147,10 @@ RUN a2enmod rewrite expires ssl && service apache2 restart
 # Installation of PHP_CodeSniffer with Drupal coding standards.
 # See https://www.drupal.org/node/1419988#coder-composer
 RUN composer global require drupal/coder
+RUN composer global require "squizlabs/php_codesniffer=*"
 RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
 RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
-RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
+#RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
 
 # install msmtp
 RUN set -x \
