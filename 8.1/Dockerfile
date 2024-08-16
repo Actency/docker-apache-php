@@ -3,7 +3,7 @@
 # - it is now required to install oniguruma lib for mbstring
 
 # Pull base image.
-FROM php:8.1-apache
+FROM php:8.1-apache-bullseye
 
 # Install tools
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
