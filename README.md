@@ -44,7 +44,7 @@ The image basically contains:
           - DRUSH_VERSION = 8 / 9
           - DOCUMENTROOT=htdocs
         volumes:
-          - /home/docker/projets/example/:/var/www/html/
+          - /home/docker/projects/example/:/var/www/html/
           - /home/docker/.ssh/:/var/www/.ssh/
         links:
           - database:mysql
@@ -143,7 +143,7 @@ The image basically contains:
     #       - SERVERALIAS=example2.local *.example2.local
     #       - DOCUMENTROOT=htdocs
     #     volumes:
-    #       - /home/docker/projets/example/:/var/www/html/
+    #       - /home/docker/projects/example/:/var/www/html/
     #       - /home/docker/.ssh/:/var/www/.ssh/
     #     links:
     #       - database:mysql
